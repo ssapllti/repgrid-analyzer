@@ -34,7 +34,7 @@ Eine browserbasierte Anwendung zur Erhebung und automatisierten Auswertung von *
 ## Nutzung
 
 ```bash
-git clone https://github.com/<benutzer>/repgrid-analyzer.git
+git clone https://github.com/ssapllti/repgrid-analyzer.git
 cd repgrid-analyzer
 python3 -m http.server 8000   # oder index.html direkt öffnen
 ```
@@ -42,7 +42,7 @@ python3 -m http.server 8000   # oder index.html direkt öffnen
 Dann `http://localhost:8000` aufrufen. Beim ersten Start ist der Beispieldatensatz geladen.
 
 ### Veröffentlichung über GitHub Pages
-Repository-Einstellungen → *Pages* → Source: `main`, Ordner `/ (root)`. Die Anwendung ist danach unter `https://<benutzer>.github.io/repgrid-analyzer/` erreichbar.
+Repository-Einstellungen → *Pages* → Source: `main`, Ordner `/ (root)`. Die Anwendung ist danach unter `https://ssapllti.github.io/repgrid-analyzer/` erreichbar.
 
 ## Datenformat
 
