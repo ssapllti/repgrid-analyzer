@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RepGrid Analyzer</title>
+<meta name="description" content="Repertory-Grid-Anwendung: Daten erfassen, automatisch auswerten, visualisieren und Erhebungszeitpunkte vergleichen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <div class="brand">
+      <span class="eyebrow">RepGrid Analyzer</span>
+      <h1 id="title">Repertory Grid</h1>
+      <span id="subtitle" class="small muted"></span>
+    </div>
+    <span class="spacer"></span>
+    <div class="controls">
+      <label for="tp-select" class="small muted">Zeitpunkt</label>
+      <select id="tp-select" aria-label="Erhebungszeitpunkt wählen"></select>
+    </div>
+  </header>
+  <nav class="tabs" role="tablist" aria-label="Bereiche">
+    <button role="tab" data-tab="daten">Daten</button>
+    <button role="tab" data-tab="auswertung">Auswertung</button>
+    <button role="tab" data-tab="vergleich">Vergleich</button>
+    <button role="tab" data-tab="methode">Methode</button>
+  </nav>
+  <main id="main"></main>
+</div>
+<div id="tip" role="tooltip"></div>
+<script src="js/sample.js"></script>
+<script src="js/analysis.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

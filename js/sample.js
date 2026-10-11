@@ -1,0 +1,365 @@
+/* Fiktiver Beispieldatensatz zur Demonstration */
+window.RG_SAMPLE = {
+ "title": "Beispielfall: Coaching-Verlauf (fiktive Daten)",
+ "scale": {
+  "min": 1,
+  "max": 5
+ },
+ "elements": [
+  "Ich selbst",
+  "Ideal-Ich",
+  "Ich vor 5 Jahren",
+  "Mutter",
+  "Vater",
+  "Partnerin",
+  "Bester Freund",
+  "Vorgesetzte",
+  "Kollege",
+  "Unsympathische Person"
+ ],
+ "constructs": [
+  {
+   "left": "ruhig",
+   "right": "nervös"
+  },
+  {
+   "left": "selbstsicher",
+   "right": "unsicher"
+  },
+  {
+   "left": "warmherzig",
+   "right": "distanziert"
+  },
+  {
+   "left": "verlässlich",
+   "right": "unzuverlässig"
+  },
+  {
+   "left": "offen",
+   "right": "verschlossen"
+  },
+  {
+   "left": "zielstrebig",
+   "right": "ziellos"
+  },
+  {
+   "left": "humorvoll",
+   "right": "ernst"
+  },
+  {
+   "left": "eigenständig",
+   "right": "abhängig"
+  }
+ ],
+ "timepoints": [
+  {
+   "id": "T1",
+   "label": "T1 Beginn",
+   "date": "2025-02-03",
+   "ratings": [
+    [
+     4,
+     1,
+     5,
+     4,
+     2,
+     2,
+     2,
+     1,
+     3,
+     3
+    ],
+    [
+     4,
+     1,
+     5,
+     3,
+     2,
+     2,
+     2,
+     1,
+     3,
+     2
+    ],
+    [
+     2,
+     1,
+     2,
+     1,
+     4,
+     1,
+     2,
+     4,
+     3,
+     5
+    ],
+    [
+     2,
+     1,
+     3,
+     2,
+     2,
+     2,
+     3,
+     1,
+     4,
+     5
+    ],
+    [
+     3,
+     1,
+     4,
+     2,
+     4,
+     1,
+     2,
+     3,
+     3,
+     5
+    ],
+    [
+     3,
+     1,
+     4,
+     3,
+     2,
+     2,
+     4,
+     1,
+     4,
+     3
+    ],
+    [
+     3,
+     2,
+     3,
+     3,
+     4,
+     2,
+     1,
+     5,
+     2,
+     5
+    ],
+    [
+     4,
+     1,
+     5,
+     3,
+     1,
+     2,
+     2,
+     1,
+     3,
+     2
+    ]
+   ]
+  },
+  {
+   "id": "T2",
+   "label": "T2 nach 3 Monaten",
+   "date": "2025-05-12",
+   "ratings": [
+    [
+     3,
+     1,
+     5,
+     4,
+     2,
+     2,
+     2,
+     2,
+     3,
+     3
+    ],
+    [
+     3,
+     1,
+     5,
+     3,
+     2,
+     2,
+     2,
+     1,
+     3,
+     2
+    ],
+    [
+     2,
+     1,
+     2,
+     2,
+     4,
+     1,
+     2,
+     4,
+     3,
+     5
+    ],
+    [
+     2,
+     1,
+     3,
+     2,
+     2,
+     2,
+     3,
+     1,
+     3,
+     4
+    ],
+    [
+     3,
+     1,
+     4,
+     3,
+     4,
+     1,
+     2,
+     3,
+     3,
+     5
+    ],
+    [
+     2,
+     1,
+     4,
+     3,
+     2,
+     2,
+     4,
+     1,
+     3,
+     3
+    ],
+    [
+     3,
+     2,
+     3,
+     3,
+     4,
+     2,
+     1,
+     4,
+     2,
+     5
+    ],
+    [
+     3,
+     1,
+     5,
+     3,
+     1,
+     2,
+     2,
+     1,
+     3,
+     2
+    ]
+   ]
+  },
+  {
+   "id": "T3",
+   "label": "T3 Abschluss",
+   "date": "2025-09-01",
+   "ratings": [
+    [
+     2,
+     1,
+     5,
+     4,
+     2,
+     2,
+     2,
+     2,
+     3,
+     3
+    ],
+    [
+     2,
+     1,
+     5,
+     3,
+     2,
+     2,
+     2,
+     1,
+     3,
+     2
+    ],
+    [
+     1,
+     1,
+     2,
+     2,
+     3,
+     1,
+     2,
+     3,
+     3,
+     5
+    ],
+    [
+     2,
+     1,
+     3,
+     2,
+     2,
+     1,
+     3,
+     1,
+     3,
+     4
+    ],
+    [
+     2,
+     2,
+     4,
+     3,
+     4,
+     1,
+     2,
+     3,
+     3,
+     5
+    ],
+    [
+     2,
+     1,
+     4,
+     3,
+     2,
+     2,
+     4,
+     1,
+     3,
+     3
+    ],
+    [
+     2,
+     2,
+     3,
+     3,
+     4,
+     2,
+     1,
+     4,
+     2,
+     5
+    ],
+    [
+     2,
+     1,
+     5,
+     3,
+     1,
+     2,
+     2,
+     1,
+     3,
+     2
+    ]
+   ]
+  }
+ ]
+};
