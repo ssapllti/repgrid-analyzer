@@ -39,6 +39,8 @@
     const sel = $('#tp-select');
     sel.innerHTML = data.timepoints.map((t, i) => `<option value="${i}" ${i === ui.tp ? 'selected' : ''}>${esc(tpName(t))}</option>`).join('');
     $$('.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === ui.tab ? 'true' : 'false'));
+    const banner = $('#banner');
+    banner.hidden = !data.isSample;
     const main = $('#main');
     main.innerHTML = { daten: renderData, auswertung: renderAnalysis, vergleich: renderCompare, methode: renderMethod }[ui.tab]();
     bindMain(main);
@@ -50,6 +52,7 @@
     const sc = data.scale;
     const status = ui.status ? `<div class="status ${ui.status.error ? 'error' : ''}">${esc(ui.status.text)}</div>` : '';
     ui.status = null;
+    if (ui.wizard) return status + renderWizard();
     const tpList = data.timepoints.map((tp, i) => `
       <div class="tp-item ${i === ui.tp ? 'active' : ''}">
         <span class="tag">${esc(tp.id)}</span>
@@ -77,8 +80,8 @@
           </div>
           <p class="small muted" style="margin-top:10px">Bewertung ${sc.min} = linker Pol trifft voll zu, ${sc.max} = rechter Pol trifft voll zu. Änderungen werden lokal im Browser gespeichert.</p>
           <div class="row" style="margin-top:14px">
+            <button class="btn primary" data-action="wizard">Eigenes Grid anlegen</button>
             <button class="btn" data-action="load-sample">Beispieldaten laden</button>
-            <button class="btn danger" data-action="reset">Leeres Grid anlegen</button>
           </div>
         </section>
         <section class="panel">
@@ -115,6 +118,60 @@
         </div>
       </section>
       </div>`;
+  }
+
+  function renderWizard() {
+    const w = ui.wizardDraft || (ui.wizardDraft = { title: '', min: 1, max: 5, label: 'T1 Erhebung', date: '', el: '', co: '' });
+    return `<div class="stack">
+      <section class="panel">
+        <header><h2>Eigenes Grid anlegen</h2><p class="small muted">Elemente und Konstrukte eintragen, danach die Bewertungen direkt in der Tabelle ausfüllen. Für weitere Erhebungszeitpunkte später einfach „Neuen Zeitpunkt anlegen“ wählen.</p></header>
+        <div class="stack">
+          <div class="row">
+            <div class="field" style="flex:1 1 260px"><label for="wz-title">Titel (z. B. Fall, Person oder Studie)</label><input type="text" id="wz-title" value="${esc(w.title)}" placeholder="z. B. Fall B – Beratungsverlauf"></div>
+            <div class="field"><label for="wz-min">Skala von</label><input type="number" id="wz-min" value="${w.min}" style="width:70px"></div>
+            <div class="field"><label for="wz-max">bis</label><input type="number" id="wz-max" value="${w.max}" style="width:70px"></div>
+            <div class="field"><label for="wz-label">Bezeichnung 1. Zeitpunkt</label><input type="text" id="wz-label" value="${esc(w.label)}"></div>
+            <div class="field"><label for="wz-date">Datum</label><input type="date" id="wz-date" value="${esc(w.date)}"></div>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label for="wz-el">Elemente – ein Element pro Zeile (mindestens 2)</label>
+              <textarea id="wz-el" rows="9" placeholder="Ich selbst\nIdeal-Ich\nMutter\nVater\nBeste Freundin">${esc(w.el)}</textarea></div>
+            <div class="field"><label for="wz-co">Konstrukte – ein Konstrukt pro Zeile, Pole getrennt durch „–“, „;“ oder Tab (mindestens 2)</label>
+              <textarea id="wz-co" rows="9" placeholder="ruhig – nervös\nselbstsicher – unsicher\nwarmherzig – distanziert">${esc(w.co)}</textarea></div>
+          </div>
+          <div id="wz-error" class="status error" hidden></div>
+          <div class="row">
+            <button class="btn primary" data-action="wizard-create">Grid anlegen und Bewertungen eintragen</button>
+            <button class="btn" data-action="wizard-cancel">Abbrechen</button>
+          </div>
+        </div>
+      </section>
+    </div>`;
+  }
+  function parseConstructLine(line) {
+    const seps = [' – ', ' — ', ';', '\t', '|', ' - ', ' / ', ' vs. ', ' vs '];
+    for (const sep of seps) {
+      if (line.includes(sep)) { const parts = line.split(sep).map(x => x.trim()).filter(Boolean); if (parts.length === 2) return { left: parts[0], right: parts[1] }; }
+    }
+    return null;
+  }
+  function wizardCreate() {
+    const w = ui.wizardDraft;
+    const err = msg => { const e = $('#wz-error'); e.textContent = msg; e.hidden = false; };
+    const elements = w.el.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+    const lines = w.co.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+    const constructs = [];
+    for (const l of lines) { const c = parseConstructLine(l); if (!c) return err(`Konstrukt „${l}“ hat keine zwei erkennbaren Pole. Bitte als „linker Pol – rechter Pol“ schreiben.`); constructs.push(c); }
+    const min = Math.round(+w.min), max = Math.round(+w.max);
+    if (elements.length < 2) return err('Bitte mindestens zwei Elemente eintragen.');
+    if (constructs.length < 2) return err('Bitte mindestens zwei Konstrukte eintragen.');
+    if (!Number.isFinite(min) || !Number.isFinite(max) || max <= min) return err('Die Skala braucht ganze Zahlen, das Maximum muss größer als das Minimum sein.');
+    const mid = Math.round((min + max) / 2);
+    data = { title: w.title.trim() || 'Neues Repertory Grid', scale: { min, max }, elements, constructs,
+      timepoints: [{ id: 'T1', label: w.label.trim() || 'T1', date: w.date, ratings: constructs.map(() => elements.map(() => mid)) }] };
+    ui.wizard = false; ui.wizardDraft = null; ui.tp = 0; ui.cmpA = 0; ui.cmpB = 0; ui.pairA = 0; ui.pairB = 1;
+    save(); setStatus(`Grid „${data.title}“ mit ${elements.length} Elementen und ${constructs.length} Konstrukten angelegt. Alle Bewertungen stehen auf ${mid} und können jetzt ausgefüllt werden.`); render();
+    const first = $('#r-0-0'); if (first) { first.focus(); first.select(); }
   }
 
   /* ----- Tab: Auswertung ----- */
@@ -346,11 +403,10 @@
         const mid = Math.round((data.scale.min + data.scale.max) / 2);
         data.constructs.push({ left: l, right: r }); data.timepoints.forEach(t => t.ratings.push(data.elements.map(() => mid))); save(); render();
       }
-      if (a === 'load-sample') { data = clone(window.RG_SAMPLE); ui.tp = 0; ui.cmpA = 0; ui.cmpB = data.timepoints.length - 1; ui.pairA = 0; ui.pairB = 1; save(); setStatus('Beispieldaten geladen (fiktiver Fall mit drei Erhebungszeitpunkten).'); render(); }
-      if (a === 'reset') {
-        data = { title: 'Neues Repertory Grid', scale: { min: 1, max: 5 }, elements: ['Ich selbst', 'Ideal-Ich', 'Element 3'], constructs: [{ left: 'Pol A', right: 'Pol B' }, { left: 'Pol C', right: 'Pol D' }], timepoints: [{ id: 'T1', label: 'T1', date: '', ratings: [[3, 3, 3], [3, 3, 3]] }] };
-        ui.tp = 0; ui.cmpA = 0; ui.cmpB = 0; ui.pairA = 0; ui.pairB = 1; save(); setStatus('Leeres Grid angelegt. Elemente, Konstrukte und Bewertungen können jetzt bearbeitet werden.'); render();
-      }
+      if (a === 'load-sample') { ui.wizard = false; data = clone(window.RG_SAMPLE); ui.tp = 0; ui.cmpA = 0; ui.cmpB = data.timepoints.length - 1; ui.pairA = 0; ui.pairB = 1; save(); setStatus('Beispieldaten geladen (fiktiver Fall mit drei Erhebungszeitpunkten).'); render(); }
+      if (a === 'wizard') { ui.wizard = true; ui.tab = 'daten'; history.replaceState(null, '', '#daten'); render(); window.scrollTo(0, 0); const f = $('#wz-title'); if (f) f.focus(); }
+      if (a === 'wizard-cancel') { ui.wizard = false; render(); }
+      if (a === 'wizard-create') wizardCreate();
       if (a === 'export-json') download(`${slug(data.title)}.json`, JSON.stringify(data, null, 2), 'application/json');
       if (a === 'export-csv') download(`${slug(data.title)}_${data.timepoints[ui.tp].id}.csv`, toCsv(ui.tp), 'text/csv');
       if (a === 'copy-json') {
@@ -358,6 +414,12 @@
         const done = ok => { setStatus(ok ? 'JSON in die Zwischenablage kopiert.' : 'Kopieren nicht möglich. Bitte „JSON herunterladen“ verwenden.', !ok); render(); };
         if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(() => done(true), () => done(false)); else done(false);
       }
+    });
+    main.addEventListener('input', e => {
+      const el = e.target, w = ui.wizardDraft;
+      if (!w || !el.id.startsWith('wz-')) return;
+      const key = { 'wz-title': 'title', 'wz-min': 'min', 'wz-max': 'max', 'wz-label': 'label', 'wz-date': 'date', 'wz-el': 'el', 'wz-co': 'co' }[el.id];
+      if (key) w[key] = el.value;
     });
     main.addEventListener('change', e => {
       const el = e.target;
@@ -482,6 +544,8 @@
   $$('.tabs button').forEach(b => b.addEventListener('click', () => { ui.tab = b.dataset.tab; history.replaceState(null, '', '#' + ui.tab); render(); window.scrollTo(0, 0); }));
   window.addEventListener('hashchange', () => { const h = location.hash.replace('#', ''); if (TABS.includes(h) && h !== ui.tab) { ui.tab = h; render(); } });
   $('#tp-select').addEventListener('change', e => { ui.tp = +e.target.value; render(); });
+  $('#btn-new').addEventListener('click', () => { ui.wizard = true; ui.tab = 'daten'; history.replaceState(null, '', '#daten'); render(); window.scrollTo(0, 0); const f = $('#wz-title'); if (f) f.focus(); });
+  $('#banner-new').addEventListener('click', () => $('#btn-new').click());
   const hash = location.hash.replace('#', '');
   ui.tab = TABS.includes(hash) ? hash : 'auswertung';
   render();

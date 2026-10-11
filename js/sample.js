@@ -1,6 +1,7 @@
 /* Fiktiver Beispieldatensatz zur Demonstration */
 window.RG_SAMPLE = {
  "title": "Beispielfall: Coaching-Verlauf (fiktive Daten)",
+ "isSample": true,
  "scale": {
   "min": 1,
   "max": 5
